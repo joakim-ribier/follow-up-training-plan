@@ -52,11 +52,10 @@ class DisplayTrainingPlanOption(config: Config) extends MainOption(config) {
             new TableRow(value, None, TableRow.fillWithEmptyChar)
           }
         }
-
         val allDaysOfWeek: Seq[TrainingDay] = fillRestDay(trainingPlan, days)
 
-        val runTotalKms = NumberFormatUtils.round(allDaysOfWeek.map(_.km.getOrElse(0.0)).sum)
-        val runTotalActivities = allDaysOfWeek.filter(x => x.`type`.toString ==  TrainingDayType.RUNNING.toString).size
+        val runTotalActivities = allDaysOfWeek.filter(x => x.`type`.toString ==  TrainingDayType.RUNNING.toString)
+        val runTotalKms = NumberFormatUtils.round(runTotalActivities.map(_.km.getOrElse(0.0)).sum)
 
         val labelValues = allDaysOfWeek.map(day => buildTableRow(day, day.label))
         val dateValues = allDaysOfWeek.map(day => buildTableRow(day, DateUtils.UI_DATE_TIME_FORMATTER.print(day.dateTime)))
@@ -79,7 +78,7 @@ class DisplayTrainingPlanOption(config: Config) extends MainOption(config) {
           }
         }
 
-        val headerName = config.getStringWithArgs("message.training-plan.view.table-title", nbWeek, runTotalActivities.toString, runTotalKms.toString)
+        val headerName = config.getStringWithArgs("message.training-plan.view.table-title", nbWeek, runTotalActivities.size.toString, runTotalKms.toString)
         drawerTable
           .withHeaderName(Some(headerName))
           .drawTable(columnsHeader, dateValues, typeValues, labelValues, kmValues, commentValues, siteValues)

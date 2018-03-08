@@ -1,4 +1,4 @@
-package fr.ribierjoakim.followuptrainingplan.common
+package fr.ribierjoakim.followuptrainingplan.common.helpers
 
 import java.nio.file.Path
 

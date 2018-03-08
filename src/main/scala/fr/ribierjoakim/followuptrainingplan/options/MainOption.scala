@@ -1,7 +1,7 @@
 package fr.ribierjoakim.followuptrainingplan.options
 
 import com.typesafe.config.Config
-import fr.ribierjoakim.followuptrainingplan.common.{StdInReadLineHelpers, WriteJsonHelpers}
+import fr.ribierjoakim.followuptrainingplan.common.helpers.{StdInReadLineHelpers, WriteJsonHelpers}
 
 abstract class MainOption(config: Config) extends StdInReadLineHelpers with WriteJsonHelpers {
 

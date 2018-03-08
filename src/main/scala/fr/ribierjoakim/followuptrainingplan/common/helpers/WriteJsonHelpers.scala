@@ -1,4 +1,4 @@
-package fr.ribierjoakim.followuptrainingplan.common
+package fr.ribierjoakim.followuptrainingplan.common.helpers
 
 import com.typesafe.config.Config
 import fr.ribierjoakim.followuptrainingplan.common.MyConfig.configToMyConfig
