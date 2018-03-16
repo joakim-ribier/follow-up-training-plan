@@ -13,13 +13,14 @@ class GoogleDriveApiService(val driveService: Drive) {
     "pdf" -> "application/pdf",
     "default" -> "application/octet-stream")
 
-  def createFolder(name: String, parentFolderId: String): String = {
+  def createFolder(name: String, parentFolderId: String): Option[String] = {
     val file = new File();
     file.setName(name);
     file.setMimeType("application/vnd.google-apps.folder");
     file.setParents(Collections.singletonList(parentFolderId))
 
-    driveService.files().create(file).setFields("id").execute().getId();
+    val execute = driveService.files().create(file).setFields("id").execute()
+    Option(execute.getId())
   }
 
   def updateFile(data: java.io.File, fileId: String): String = {
@@ -33,7 +34,7 @@ class GoogleDriveApiService(val driveService: Drive) {
     driveService.files().update(fileId, file, fileContent).execute().getId()
   }
 
-  def createFile(data: java.io.File, parentFolderId: String): String = {
+  def createFile(data: java.io.File, parentFolderId: String): Option[String] = {
     val file = new File();
     file.setName(data.getName);
     file.setDescription("**File automatically uploaded from the application by the Google Drive API**")
@@ -42,7 +43,8 @@ class GoogleDriveApiService(val driveService: Drive) {
 
     val fileContent = new FileContent(file.getMimeType, data)
 
-    driveService.files().create(file, fileContent).setFields("id").execute().getId()
+    val execute = driveService.files().create(file, fileContent).setFields("id").execute()
+    Option(execute.getId())
   }
 
   private def findMimeType(file: java.io.File): String = {

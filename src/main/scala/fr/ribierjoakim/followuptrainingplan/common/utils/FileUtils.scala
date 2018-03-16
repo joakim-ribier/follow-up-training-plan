@@ -46,6 +46,14 @@ object FileUtils {
     }
   }
 
+  def move(from: Path, to: Path): Option[Path] = {
+    try {
+      Some(Files.move(from, to, StandardCopyOption.REPLACE_EXISTING))
+    } catch {
+      case t : Throwable => t.console; None
+    }
+  }
+
   def delete(path: Path) = {
     try {
       Files.deleteIfExists(path)
@@ -59,6 +67,7 @@ object FileUtils {
   def read(path: Path): String = new String(Files.readAllBytes(path))
 
   def writeJson(path: Path, json: Json): Boolean = write(path, printer.pretty(json))
+
   private def write(path: Path, data: String): Boolean = {
     try {
       Files.write(path, data.getBytes); true

@@ -1,6 +1,6 @@
 package fr.ribierjoakim.followuptrainingplan.common
 
-import java.nio.file.{Path, Paths}
+import java.nio.file.Paths
 
 import com.typesafe.config.{Config, ConfigException}
 
@@ -45,7 +45,7 @@ case class MyConfig(config: Config) {
 
   def getFilePathFromCurrentDir(filename: String) = Paths.get(getCurrentDirPath.toFile.getAbsolutePath, filename)
 
+  def getRootDataDirPath = Paths.get(getSettingValue("root-data-directory"))
   def getCurrentDirPath = Paths.get(getSettingValue("training-plan.current-directory"))
-
   def getCurrentFilePath = Paths.get(getSettingValue("training-plan.current-data-file"))
 }

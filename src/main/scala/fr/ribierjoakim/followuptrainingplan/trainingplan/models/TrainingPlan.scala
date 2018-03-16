@@ -6,7 +6,7 @@ import org.joda.time.DateTime
 
 case class TrainingPlan(
   name: String, startDate: DateTime,
-  expectedTime: String, plan: Option[String] = None,
+  expectedTime: String, goalAchieved: Boolean = false, plan: Option[String] = None,
   comment: Option[String] = None, hrMax: Option[Int] = None, hrRest: Option[Int] = None,
   weeks: Map[String, Seq[TrainingDay]] = Map(), drive: Option[Map[String, String]] = None)  {
 

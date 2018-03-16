@@ -69,6 +69,7 @@ class MainTrainingPlanOption(config: Config) extends MainOption(config) {
       "3" -> new ResumeTrainingPlanDayOption(config),
       "4" -> new BackupTrainingPlanOption(config),
       "5" -> new GenerateTrainingPlanPDFOption(config),
+      "6" -> new ArchiveTrainingPlanOption(config),
       "x" -> new ExitMenuOption(config))
 
     menu(config, menuOptions)

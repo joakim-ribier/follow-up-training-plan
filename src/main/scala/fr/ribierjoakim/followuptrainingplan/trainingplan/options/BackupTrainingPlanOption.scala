@@ -32,10 +32,14 @@ class BackupTrainingPlanOption(config: Config) extends MainOption(config) {
 
         if (!mapFileNameToDriveId.contains(config.currentDirName)) {
           LoadingScreenComponent.start
-          val driveFileId = service.createFolder(config.currentDirName, config.getSettingValue("drive.folder-id"))
-          LoadingScreenComponent.stop
-          mapFileNameToDriveId += (config.currentDirName -> driveFileId)
-          println(config.getStringWithArgs("message.training-plan.drive.new-folder.label", driveFileId, config.currentDirName))
+          service.createFolder(config.currentDirName, config.getSettingValue("drive.folder-id")) match {
+            case Some(driveFileId) => {
+              LoadingScreenComponent.stop
+              mapFileNameToDriveId += (config.currentDirName -> driveFileId)
+              println(config.getStringWithArgs("message.training-plan.drive.new-folder.label", driveFileId, config.currentDirName))
+            }
+            case _ => printError(s"error to create '${config.currentDirName}' remote folder in '${config.getSettingValue("drive.folder-id")}'")
+          }
         }
 
         FileUtils.getFileList(config.getCurrentDirPath).foreach { file =>
@@ -46,11 +50,15 @@ class BackupTrainingPlanOption(config: Config) extends MainOption(config) {
               LoadingScreenComponent.stop
               println(config.getStringWithArgs("message.training-plan.drive.update-file.label", driveFileId, file.getName))
             }
-            case None => {
-              val driveFileId = service.createFile(file, mapFileNameToDriveId.get(config.currentDirName).get)
-              LoadingScreenComponent.stop
-              mapFileNameToDriveId += (file.getName -> driveFileId)
-              println(config.getStringWithArgs("message.training-plan.drive.new-file.label", driveFileId, file.getName))
+            case _ => {
+              service.createFile(file, mapFileNameToDriveId.get(config.currentDirName).get) match {
+                case Some(driveFileId) => {
+                  LoadingScreenComponent.stop
+                  mapFileNameToDriveId += (file.getName -> driveFileId)
+                  println(config.getStringWithArgs("message.training-plan.drive.new-file.label", driveFileId, file.getName))
+                }
+                case _ => printError(s"error to upload '${file.getName()}' to '${mapFileNameToDriveId.get(config.currentDirName).get}'")
+              }
             }
           }
         }
