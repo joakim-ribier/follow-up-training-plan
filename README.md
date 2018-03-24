@@ -8,6 +8,7 @@
 * [Google Drive Backup](#google-drive-backup)
 * [Screenshot](#screenshot)
 * [Troubleshooting](#troubleshooting)
+* [Test](#test)
 
 ## Configuration
 
@@ -58,3 +59,7 @@ drive {
 ## Troubleshooting
 
 Soon...
+
+## Test
+
+![Affiche - Tester C'est Douter](/resources/affiche-tester-c-est-douter.jpg)
