@@ -25,6 +25,11 @@ libraryDependencies ++= Seq(
   "com.google.apis" % "google-api-services-drive" % "v3-rev102-1.23.0"
 )
 
+libraryDependencies ++= Seq(
+  "org.scalactic" %% "scalactic" % "3.0.5",
+  "org.scalatest" %% "scalatest" % "3.0.5" % "test"
+)
+
 lazy val app = (project in file("app")).
   settings(
     mainClass in assembly := Some("fr.ribierjoakim.followuptrainingplan.Main")
