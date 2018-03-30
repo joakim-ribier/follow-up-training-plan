@@ -3,6 +3,7 @@ package fr.ribierjoakim.followuptrainingplan.common
 import java.nio.file.Paths
 
 import com.typesafe.config.{Config, ConfigException}
+import fr.ribierjoakim.followuptrainingplan.trainingplan.models.TrainingDayType.TrainingDayType
 
 object MyConfig {
 
@@ -48,4 +49,20 @@ case class MyConfig(config: Config) {
   def getRootDataDirPath = Paths.get(getSettingValue("root-data-directory"))
   def getCurrentDirPath = Paths.get(getSettingValue("training-plan.current-directory"))
   def getCurrentFilePath = Paths.get(getSettingValue("training-plan.current-data-file"))
+
+  object TrainingPlan {
+    private val prefix = "message.training-plan"
+
+    def getTrainingDayKeyByShortcut(shortcut: String): Option[String] = {
+      val map = config.getObject(s"$prefix.training-day-type.shortcut.map")
+      map.get(shortcut) match {
+        case null => None
+        case x => Some(x.unwrapped().toString)
+      }
+    }
+
+    def getDisplayTrainingTypeValue(trainingDayType: TrainingDayType): String = {
+      config.getString(s"$prefix.training-day.type.${trainingDayType.toString.toLowerCase}.label")
+    }
+  }
 }

@@ -152,7 +152,7 @@ class GenerateTrainingPlanPDFService(config: Config) extends ITextHelpers {
         days.foldLeft(0) { case (cpt, day) =>
           val backColor: Boolean = (cpt % 2) == 0
           weekTable.addCell(getCell(DateUtils.UI_DATE_TIME_FORMATTER.print(day.dateTime), bckColor = backColor, hzAlign = Element.ALIGN_CENTER))
-          weekTable.addCell(getCell(config.getString(s"message.training-day.type.${day.`type`.toString.toLowerCase}.label"), bckColor = backColor, hzAlign = Element.ALIGN_CENTER))
+          weekTable.addCell(getCell(config.TrainingPlan.getDisplayTrainingTypeValue(day.`type`), bckColor = backColor, hzAlign = Element.ALIGN_CENTER))
           weekTable.addCell(getCell(day.label, bckColor = backColor))
           weekTable.addCell(getCell(day.km.map(_.toString).getOrElse(""), bckColor = backColor, hzAlign = Element.ALIGN_CENTER))
           weekTable.addCell(getCell(day.comment.getOrElse(""), bckColor = backColor))

@@ -63,7 +63,7 @@ class DisplayTrainingPlanOption(config: Config) extends MainOption(config) {
         val siteValues = allDaysOfWeek.map(day => buildTableRow(day, day.site.getOrElse("")))
 
         val typeValues = allDaysOfWeek.map { x =>
-          val value = config.getString(s"message.training-day.type.${x.`type`.toString.toLowerCase}.label")
+          val value = config.TrainingPlan.getDisplayTrainingTypeValue(x.`type`)
           new TableRow(value, None, TableRow.fillWithEmptyChar)
         }
 

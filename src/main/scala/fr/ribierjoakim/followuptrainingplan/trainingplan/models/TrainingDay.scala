@@ -21,10 +21,22 @@ object TrainingDay {
 
 object TrainingDayType extends Enumeration {
   type TrainingDayType = Value
-  val RUNNING, SWIMMING, BIKING, REST, YOGA = Value
+  val BIKING, REST, RUNNING, SWIMMING, YOGA, VAA = Value
 
-  val keyMapType = Map("r" -> RUNNING, "s" -> SWIMMING, "b" -> BIKING, "rest" -> REST, "y" -> YOGA)
-  def parse(value: String): TrainingDayType.Value = keyMapType.getOrElse(value, RUNNING)
+  val keyMapType = Map(
+    "bik" -> BIKING,
+    "rest" -> REST,
+    "run" -> RUNNING,
+    "swim" -> SWIMMING,
+    "vaa" -> VAA,
+    "yoga" -> YOGA)
+
+  def parse(value: Option[String]): TrainingDayType.Value = {
+    value match {
+      case Some(x) => keyMapType.getOrElse(x, RUNNING)
+      case _ => RUNNING
+    }
+  }
 
   implicit val trainingDayTypeEncoder: Encoder[TrainingDayType] = Encoder.encodeString.contramap[TrainingDayType](_.toString.toLowerCase)
 

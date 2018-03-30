@@ -1,6 +1,7 @@
 package fr.ribierjoakim.followuptrainingplan.trainingplan.options
 
 import com.typesafe.config.Config
+import fr.ribierjoakim.followuptrainingplan.common.MyConfig.configToMyConfig
 import fr.ribierjoakim.followuptrainingplan.options.MainOption
 import fr.ribierjoakim.followuptrainingplan.screendrawing.DrawerHashUtils._
 import fr.ribierjoakim.followuptrainingplan.trainingplan.models.{TrainingDay, TrainingDayType, TrainingPlan}
@@ -30,7 +31,7 @@ class ResumeTrainingPlanDayOption(config: Config) extends MainOption(config) {
 
         printLineBreak
         if (readBoolean(config, "message.app.confirm-to-continue")) {
-          val `type` = TrainingDayType.parse(maybeType.getOrElse(""))
+          val `type` = TrainingDayType.parse(config.TrainingPlan.getTrainingDayKeyByShortcut(maybeType.getOrElse("")))
           val trainingPlanDay = TrainingDay(label, dateTime, `type`, comment, site, maybeKm)
           writeCurrentData(config, addNewTrainingDay(trainingPlan, trainingPlanDay))
         }
