@@ -54,7 +54,7 @@ class DisplayTrainingPlanOption(config: Config) extends MainOption(config) {
         }
         val allDaysOfWeek: Seq[TrainingDay] = fillRestDay(trainingPlan, days)
 
-        val runTotalActivities = allDaysOfWeek.filter(x => x.`type`.toString ==  TrainingDayType.RUNNING.toString)
+        val runTotalActivities = allDaysOfWeek.filter(x => x.`type`.toString ==  trainingPlan.`type`.toString)
         val runTotalKms = NumberFormatUtils.round(runTotalActivities.map(_.km.getOrElse(0.0)).sum)
 
         val labelValues = allDaysOfWeek.map(day => buildTableRow(day, day.label))

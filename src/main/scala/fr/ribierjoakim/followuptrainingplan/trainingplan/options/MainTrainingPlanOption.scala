@@ -11,7 +11,7 @@ import fr.ribierjoakim.followuptrainingplan.common.utils.FileUtils.{createDirect
 import fr.ribierjoakim.followuptrainingplan.common.utils.{DateUtils, HRComputeUtils}
 import fr.ribierjoakim.followuptrainingplan.options.{ExitMenuOption, MainOption}
 import fr.ribierjoakim.followuptrainingplan.screendrawing.DrawerHashUtils._
-import fr.ribierjoakim.followuptrainingplan.trainingplan.models.TrainingPlan
+import fr.ribierjoakim.followuptrainingplan.trainingplan.models.{TrainingDayType, TrainingPlan}
 
 import scala.collection.immutable.ListMap
 
@@ -23,6 +23,8 @@ class MainTrainingPlanOption(config: Config) extends MainOption(config) {
       printLineBreak
       val name = readString(config, "message.training-plan.set-plan-name.label")
       val startDate = readDate(config, "message.training-plan.set-start-date.label")
+      val maybeType: Option[String] = readStringOpt(config, "message.training-plan.day.set-type.label")
+      val `type` = TrainingDayType.parse(config.TrainingPlan.getTrainingDayKeyByShortcut(maybeType.getOrElse("")))
 
       printLineBreak
       val expectedTime = readString(config, "message.training-plan.set-expected-time.label")
@@ -36,6 +38,7 @@ class MainTrainingPlanOption(config: Config) extends MainOption(config) {
       val trainingPlan = TrainingPlan(
         name = name,
         startDate = startDate,
+        `type` = `type`,
         expectedTime = expectedTime,
         comment = comment,
         hrMax = hrMax,

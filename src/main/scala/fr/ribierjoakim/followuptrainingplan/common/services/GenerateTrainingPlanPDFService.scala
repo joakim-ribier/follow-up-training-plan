@@ -132,7 +132,7 @@ class GenerateTrainingPlanPDFService(config: Config) extends ITextHelpers {
         weekTable.setTotalWidth(columnWidth)
 
         // header title
-        val runTotalActivities = days.filter(x => x.`type`.toString ==  TrainingDayType.RUNNING.toString)
+        val runTotalActivities = days.filter(x => x.`type`.toString ==  trainingPlan.`type`.toString)
         val runTotalKms = NumberFormatUtils.round(runTotalActivities.map(_.km.getOrElse(0.0)).sum)
         val headerTableValue = config.getStringWithArgs("message.training-plan.view.table-title", nbWeek, runTotalActivities.size.toString, runTotalKms.toString)
 
