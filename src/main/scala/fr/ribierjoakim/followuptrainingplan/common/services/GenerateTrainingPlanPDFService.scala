@@ -6,10 +6,11 @@ import com.itextpdf.text._
 import com.itextpdf.text.pdf._
 import com.typesafe.config.Config
 import fr.ribierjoakim.followuptrainingplan.common.MyConfig._
+import fr.ribierjoakim.followuptrainingplan.common.MyString._
 import fr.ribierjoakim.followuptrainingplan.common.helpers.ITextHelpers
 import fr.ribierjoakim.followuptrainingplan.common.utils.{DateUtils, HRComputeUtils, NumberFormatUtils}
 import fr.ribierjoakim.followuptrainingplan.computeaverage.models.PaceTime
-import fr.ribierjoakim.followuptrainingplan.trainingplan.models.{TrainingDay, TrainingDayType, TrainingPlan}
+import fr.ribierjoakim.followuptrainingplan.trainingplan.models.{TrainingDay, TrainingPlan}
 
 import scala.collection.immutable.ListMap
 
@@ -32,6 +33,9 @@ class GenerateTrainingPlanPDFService(config: Config) extends ITextHelpers {
       document.newPage()
 
       addFollowUpPage(document, trainingPlan, anchorMapPage, config)
+      document.newPage()
+
+      addResultPage(document, trainingPlan, anchorMapPage, config)
 
       document.close()
       fileName
@@ -76,9 +80,12 @@ class GenerateTrainingPlanPDFService(config: Config) extends ITextHelpers {
     menuTable.addCell(getCell("1."))
     menuTable.addCell(getCell(config.getString("message.training-plan.pdf.page.training"), anchorRef = Some("#trainingPageTarget")))
 
+    menuTable.addCell(getCell("2."))
+    menuTable.addCell(getCell(config.getString("message.training-plan.pdf.page.result"), anchorRef = Some("#resultPageTarget")))
+
     document.add(menuTable)
 
-    Map("trainingPage" -> "trainingPageTarget")
+    Map("trainingPage" -> "trainingPageTarget", "resultPage" -> "resultPageTarget")
   }
 
   private def addFollowUpPage(document: Document, trainingPlan: TrainingPlan, anchorMapPage: Map[String, String], config: Config) = {
@@ -162,6 +169,29 @@ class GenerateTrainingPlanPDFService(config: Config) extends ITextHelpers {
         document.add(weekTable)
       }
     }
+  }
+
+  private def addResultPage(document: Document, trainingPlan: TrainingPlan, anchorMapPage: Map[String, String], config: Config) = {
+    val titleTable = new PdfPTable(1)
+    titleTable.addCell(getTitlePageCell(config.getString("message.training-plan.pdf.page.result"), anchorMapPage.get("resultPage")))
+    document.add(titleTable)
+
+    val infoTable = new PdfPTable(1)
+    infoTable.setSpacingBefore(30.0f)
+    infoTable.setSpacingAfter(30.0f)
+
+    trainingPlan.resultComment.map { value =>
+      infoTable.addCell(getCell(value.displayFromJson, hzAlign = Element.ALIGN_JUSTIFIED))
+      infoTable.addCell(getCell(" "))
+    }
+
+    trainingPlan.resultTime.map { resultTime =>
+      val trainingPlanFormat = PaceTime.to(resultTime).map(_.toString).getOrElse("")
+      infoTable.addCell(getCell(trainingPlanFormat.toUpperCase, padding = 15.0f, hzAlign = Element.ALIGN_CENTER, bold = true, size = 22, color = blue))
+    }
+    infoTable.addCell(getCell(config.getString(s"message.training-plan.pdf.goal-achieved.${trainingPlan.goalAchieved.toString}"), padding = 15.0f, hzAlign = Element.ALIGN_CENTER, size = 18))
+
+    document.add(infoTable)
   }
 
   private class OnEndPagePdfPageEvent(trainingPlan: TrainingPlan, config: Config) extends PdfPageEventHelper {

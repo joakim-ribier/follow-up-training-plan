@@ -26,16 +26,19 @@ class ArchiveTrainingPlanOption(config: Config) extends MainOption(config) {
   override def start = {
     val decoderService = new TrainingPlanDecoderService(config)
     decoderService.getCurrentTrainingPlan match {
-      case Some(trainingPlan) => {
+      case Some(x) => {
 
         printInfo(config.getString("message.training-plan.archive.start"))
         printLineBreak
 
         val goalAchieved = readBoolean(config, "message.training-plan.archive.goal-achieved.label")
+        val resultTime = readString(config, "message.training-plan.archive.result-time.label")
+        printLineBreak
+        val resultComment = readString(config, "message.training-plan.archive.result-comment.label")
         printLineBreak
 
         // Step 1 - Update Training Plan
-        updateTrainingPlan(trainingPlan, goalAchieved)
+        val trainingPlan = updateTrainingPlan(x, resultTime, goalAchieved, resultComment)
 
         // Step 2 - Generate PDF
         generatePDF(trainingPlan)
@@ -75,11 +78,20 @@ class ArchiveTrainingPlanOption(config: Config) extends MainOption(config) {
     }
   }
 
-  private def updateTrainingPlan(trainingPlan: TrainingPlan, goalAchieved: Boolean) = {
+  private def updateTrainingPlan(trainingPlan: TrainingPlan, resultTime: String, goalAchieved: Boolean, resultComment: String): TrainingPlan = {
     LoadingScreenComponent.start
-    writeCurrentData(config, trainingPlan.copy(goalAchieved = goalAchieved))
+
+    val trainingPlanUpdated = trainingPlan.copy(
+      resultTime = Some(resultTime),
+      goalAchieved = goalAchieved,
+      resultComment = Some(resultComment))
+
+    writeCurrentData(config, trainingPlanUpdated)
+
     LoadingScreenComponent.stop
     println(config.getString("message.training-plan.archive.step-1"))
+
+    trainingPlanUpdated
   }
 
   private def generatePDF(trainingPlan: TrainingPlan) = {
