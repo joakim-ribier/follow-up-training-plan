@@ -64,6 +64,11 @@ class ArchiveTrainingPlanOption(config: Config) extends MainOption(config) {
 
             // Step 4 - Cloud backup
             driveBackup(trainingPlan, now, archivePath)
+            println(config.getString("message.training-plan.archive.step-4"))
+
+            // Step 5 - Clean Google Drive 'current' folder
+            cleanGoogleDriveCurrentFolder(trainingPlan)
+            println(config.getString("message.training-plan.archive.step-5"))
 
             printInfo(config.getString("message.training-plan.archive.successful"))
             throw new ExitMenuException
@@ -138,7 +143,18 @@ class ArchiveTrainingPlanOption(config: Config) extends MainOption(config) {
         printError(s"error to create '${trainingPlan.formatNameToFileName}' remote folder in '${value.unwrapped().toString}'")
       }
     }
-    println(config.getString("message.training-plan.archive.step-4"))
+  }
+
+  private def cleanGoogleDriveCurrentFolder(trainingPlan: TrainingPlan) = {
+    val service: GoogleDriveApiService = OAuth2GoogleDrive.service
+
+    var mapFileNameToDriveId = trainingPlan.drive.getOrElse(Map())
+    mapFileNameToDriveId.get(config.currentDirName) match {
+      case Some(fileId) => {
+        service.removeFile(fileId)
+      }
+      case _ => throw new IllegalArgumentException(s"operation not supported current folder not exists")
+    }
   }
 
   override def titleMenuKey = "message.training-plan.option.archive.title"

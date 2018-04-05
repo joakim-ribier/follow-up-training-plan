@@ -47,6 +47,10 @@ class GoogleDriveApiService(val driveService: Drive) {
     Option(execute.getId())
   }
 
+  def removeFile(fileId: String) = {
+    driveService.files.delete(fileId).execute()
+  }
+
   private def findMimeType(file: java.io.File): String = {
     val defaultMimeType = extensionToMimeType.get("default").get
     lazy val ExtensionRegex = """^.*\.(.*)$""".r
